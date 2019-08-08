@@ -8,12 +8,25 @@
 
 require 'json'
 require 'rest-client'
+require 'open-uri'
+require 'nokogiri'
 
 people = JSON.parse(RestClient.get("https://swapi.co/api/people"))["results"]
+
 puts "begin seeding..."
+
+puts 
+
 people.take(10).each do |person|
   new_species = JSON.parse(RestClient.get(person["species"].first))["name"]
   new_homeworld = JSON.parse(RestClient.get(person["homeworld"]))["name"]
+  
+  personName = person["name"].gsub(" ", "+")
+  puts person["name"]
+  character_page_url = JSON.parse(RestClient.get("https://starwars.fandom.com/api/v1/Search/List?query=#{personName}&limit=1&minArticleQuality=1&batch=1&namespaces=0%2C14"))["items"].first["url"]
+
+  html_doc = Nokogiri::HTML(open(character_page_url))
+  photo_url = html_doc.search('.pi-image-thumbnail').first.attribute('src').value
   new_person = Person.new(
     name: person["name"],
     height: person["height"],
@@ -24,9 +37,10 @@ people.take(10).each do |person|
     birth_year: person["birth_year"],
     gender: person["gender"],
     species: new_species,
-    homeworld: new_homeworld
+    homeworld: new_homeworld,
+    photo_url: photo_url
   )
   new_person.save
-  puts person
+  # puts person
 end
 puts "seeding done."
