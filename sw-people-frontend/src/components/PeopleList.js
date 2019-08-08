@@ -7,7 +7,6 @@ import Panel from 'muicss/lib/react/panel'
 import Button from 'muicss/lib/react/button'
 import Divider from 'muicss/lib/react/divider'
 import axios from 'axios'
-import update from 'immutability-helper'
 import PersonInfo from './PersonInfo'
 
 export class PeopleList extends Component {
@@ -35,11 +34,9 @@ export class PeopleList extends Component {
       return person.id === id
     })[0]
     this.setState({ person: { ...person } })
-    console.log(this.state.person)
   }
 
   render() {
-    const person = JSON.stringify(this.state.people[0])
     return (
       <Container>
         <Row>
