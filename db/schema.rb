@@ -24,10 +24,10 @@ ActiveRecord::Schema.define(version: 2019_08_08_114411) do
     t.string "eye_color"
     t.string "birth_year"
     t.string "gender"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "species"
     t.string "homeworld"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

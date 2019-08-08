@@ -10,9 +10,11 @@ require 'json'
 require 'rest-client'
 
 people = JSON.parse(RestClient.get("https://swapi.co/api/people"))["results"]
-
+puts "begin seeding..."
 people.take(10).each do |person|
-  person = Person.new(
+  new_species = JSON.parse(RestClient.get(person["species"].first))["name"]
+  new_homeworld = JSON.parse(RestClient.get(person["homeworld"]))["name"]
+  new_person = Person.new(
     name: person["name"],
     height: person["height"],
     mass: person["mass"],
@@ -20,8 +22,11 @@ people.take(10).each do |person|
     skin_color: person["skin_color"],
     eye_color: person["eye_color"],
     birth_year: person["birth_year"],
-    gender: person["gender"]
+    gender: person["gender"],
+    species: new_species,
+    homeworld: new_homeworld
   )
-  person.save
+  new_person.save
   puts person
 end
+puts "seeding done."
