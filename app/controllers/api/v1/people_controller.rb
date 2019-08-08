@@ -10,6 +10,9 @@ module Api
       end
 
       def update
+        person = Person.find(params[:id])
+        person.update_attributes(perso_params)
+        render json: person
       end
 
       def destroy
