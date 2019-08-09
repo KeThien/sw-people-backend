@@ -11,6 +11,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
+import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 
@@ -29,24 +30,56 @@ export class PersonInfo extends Component {
       { value: 'hutt', label: 'hutt' },
       { value: 'none', label: 'none' }
     ],
-    person: this.props.person
-  }
-  handleClickMode = e => {
-    if (e === 'edit') {
-      this.setState({ mode: 'edit' })
-    } else if (e === 'view') {
-      this.setState({ mode: 'view' })
+    person: {
+      species: '',
+      gender: '',
+      homeworld: '',
+      height: '',
+      mass: '',
+      birth_year: '',
+      skin_color: '',
+      hair_color: '',
+      eye_color: ''
     }
   }
-  handleChange = e => {}
+
+  handleClickMode = e => {
+    if (e === 'edit') {
+      this.props.handleMode('edit')
+      this.setState({
+        person: {
+          species: this.props.person.species,
+          gender: this.props.person.gender,
+          homeworld: this.props.person.homeworld,
+          height: this.props.person.height,
+          mass: this.props.person.mass,
+          birth_year: this.props.person.birth_year,
+          skin_color: this.props.person.skin_color,
+          hair_color: this.props.person.hair_color,
+          eye_color: this.props.person.eye_color
+        }
+      })
+    } else if (e === 'view') {
+      this.props.handleMode('view')
+    }
+  }
+  handleChange = (prop, e) => {
+    console.log(prop, e.target.value)
+    const value = e.target.value
+    this.setState(prevState => ({
+      person: {
+        ...prevState.person,
+        homeworld: value
+      }
+    }))
+  }
   handleSubmit = e => {
     e.preventDefault()
     this.setState({ mode: 'view' })
     console.log('submit')
   }
-  componentDidMount() {}
   render() {
-    if (this.props.person.name && this.state.mode === 'view') {
+    if (this.props.person.name && this.props.mode === 'view') {
       return (
         <Container>
           <Grid container style={GridContainerStyle}>
@@ -100,14 +133,18 @@ export class PersonInfo extends Component {
           </Grid>
         </Container>
       )
-    } else if (this.props.person.name && this.state.mode === 'edit') {
+    } else if (this.props.person.name && this.props.mode === 'edit') {
       return (
         <Container>
           <Grid container style={GridContainerStyle}>
             <Grid item xs={7} className="text-align-left">
               <h2 style={nameStyle}>{this.props.person.name}</h2>
-              <div style={formStyle}>
-                <form onSubmit={this.handleSubmit} autoComplete="off">
+              <div>
+                <form
+                  onSubmit={this.handleSubmit}
+                  autoComplete="off"
+                  style={formStyle}
+                >
                   <FormControl margin="normal">
                     <InputLabel>species</InputLabel>
                     <Select value={this.props.person.species} required={true}>
@@ -133,13 +170,13 @@ export class PersonInfo extends Component {
                     </Select>
                   </FormControl>
                   <FormControl>
-                    <TextField
-                      label="homeworld"
-                      defaultValue={this.props.person.homeworld}
+                    <InputLabel>homeworld</InputLabel>
+                    <Input
                       required={true}
-                      margin="normal"
-                      onChange={this.handleChange('homeworld')}
+                      defaultValue={this.props.person.homeworld}
+                      onChange={e => this.handleChange('homeworld', e)}
                     />
+                    <FormHelperText> </FormHelperText>
                   </FormControl>
                   <FormControl>
                     <TextField

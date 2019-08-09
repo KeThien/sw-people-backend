@@ -12,7 +12,8 @@ import PersonInfo from './PersonInfo'
 export class PeopleList extends Component {
   state = {
     people: [],
-    person: {}
+    person: {},
+    mode: ''
   }
   getPeople() {
     axios
@@ -26,16 +27,16 @@ export class PeopleList extends Component {
     this.getPeople()
   }
   handleClick = id => {
-    // const infoPanel = document.getElementById('info-panel')
-    // infoPanel.classList.toggle('is-info-open')
-    // infoPanel.classList.toggle('mui--hidden-xs')
-    // infoPanel.classList.toggle('mui--hidden-sm')
     const person = this.state.people.filter(person => {
       return person.id === id
     })[0]
     this.setState({ person: { ...person } })
+    this.setState({ mode: 'view' })
   }
-
+  handleMode = e => {
+    console.log(e)
+    this.setState({ mode: e })
+  }
   render() {
     return (
       <Container>
@@ -60,7 +61,11 @@ export class PeopleList extends Component {
           <Grid item xs={12} sm={7}>
             <Hidden xsDown>
               <Paper>
-                <PersonInfo person={this.state.person} />
+                <PersonInfo
+                  person={this.state.person}
+                  handleMode={this.handleMode}
+                  mode={this.state.mode}
+                />
               </Paper>
             </Hidden>
           </Grid>
