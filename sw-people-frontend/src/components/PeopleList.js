@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import Hidden from '@material-ui/core/Hidden'
 import Divider from '@material-ui/core/Divider'
 import axios from 'axios'
+
 import PersonInfo from './PersonInfo'
 
 export class PeopleList extends Component {
@@ -34,8 +35,23 @@ export class PeopleList extends Component {
     this.setState({ mode: 'view' })
   }
   handleMode = e => {
-    console.log(e, 'mode')
+    // console.log(e, 'mode')
     this.setState({ mode: e })
+  }
+  handleSubmit = person => {
+    this.setState({ mode: 'view' })
+    // console.log('submit', this.state.person.id)
+    this.setState({ person: { ...person } })
+    // console.log(this.state.person)
+    this.setState(prevState => ({
+      people: prevState.people.map(prevPerson => {
+        if (prevPerson.id === this.state.person.id) {
+          return person
+        } else {
+          return prevPerson
+        }
+      })
+    }))
   }
   render() {
     return (
@@ -59,15 +75,14 @@ export class PeopleList extends Component {
             </Paper>
           </Grid>
           <Grid item xs={12} sm={7}>
-            <Hidden xsDown>
-              <Paper style={paperStyle}>
-                <PersonInfo
-                  person={this.state.person}
-                  handleMode={this.handleMode}
-                  mode={this.state.mode}
-                />
-              </Paper>
-            </Hidden>
+            <Paper style={paperStyle}>
+              <PersonInfo
+                person={this.state.person}
+                handleMode={this.handleMode}
+                mode={this.state.mode}
+                handleSubmit={this.handleSubmit}
+              />
+            </Paper>
           </Grid>
         </Grid>
       </Container>

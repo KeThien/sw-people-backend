@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './People.css'
 
 import axios from 'axios'
-import update from 'immutability-helper'
 
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
@@ -25,7 +24,8 @@ export class PersonInfo extends Component {
       { value: 'male', label: 'male' },
       { value: 'female', label: 'female' },
       { value: 'hermaphrodite', label: 'hermaphrodite' },
-      { value: 'none', label: 'none' }
+      { value: 'none', label: 'none' },
+      { value: 'n/a', label: 'n/a' }
     ],
     person: {
       name: '',
@@ -124,8 +124,15 @@ export class PersonInfo extends Component {
 
   handleSubmit = e => {
     e.preventDefault()
+    const id = this.props.person.id
     this.setState({ mode: 'view' })
-    console.log('submit')
+    axios
+      .patch(`/api/v1/people/${id}`, this.state.person)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => console.log(error))
+    this.props.handleSubmit({ ...this.props.person, ...this.state.person })
   }
   render() {
     if (this.props.person.name && this.props.mode === 'view') {
