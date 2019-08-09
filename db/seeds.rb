@@ -11,22 +11,66 @@ require 'rest-client'
 require 'open-uri'
 require 'nokogiri'
 
-people = JSON.parse(RestClient.get("https://swapi.co/api/people"))["results"]
+people = []
+species = []
 
-puts "begin seeding..."
+puts "-----------------"
+puts " Begin parsing..."
+puts "-----------------"
 
-puts 
+for i in 1..9 do
+  (people << JSON.parse(RestClient.get("https://swapi.co/api/people/?page=#{i}"))["results"]).flatten!
+end
+puts JSON.pretty_generate(people)
 
-people.take(10).each do |person|
-  new_species = JSON.parse(RestClient.get(person["species"].first))["name"]
-  new_homeworld = JSON.parse(RestClient.get(person["homeworld"]))["name"]
+for i in 1..37 do
+  (species << JSON.parse(RestClient.get("https://swapi.co/api/species/#{i}"))["name"]).flatten!
+end
+puts "--------------"
+puts " Parsing done."
+puts "--------------"
+puts ""
+puts "-----------------"
+puts " List of species"
+puts "-----------------"
+
+species.each do |sp|
+  new_species = Species.new(
+  name: sp
+  )
+  puts sp
+  new_species.save
+end
+puts ""
+puts "-----------------"
+puts " Begin seeding..."
+puts "-----------------"
+
+def search_wikia(name)
+  return JSON.parse(RestClient.get("https://starwars.fandom.com/api/v1/Search/List?query=#{URI.encode(name)}&limit=1&minArticleQuality=1&batch=1&namespaces=0%2C14"))["items"].first["url"]
+end
+
+people.each do |person|
   
-  personName = person["name"].gsub(" ", "+")
+  new_species = person["species"].first.nil? ? "" : JSON.parse(RestClient.get(person["species"].first))["name"]
+  
+  new_homeworld = person["homeworld"].nil? ? "" : JSON.parse(RestClient.get(person["homeworld"]))["name"]
+  
   puts person["name"]
-  character_page_url = JSON.parse(RestClient.get("https://starwars.fandom.com/api/v1/Search/List?query=#{personName}&limit=1&minArticleQuality=1&batch=1&namespaces=0%2C14"))["items"].first["url"]
+  personName = person["name"].split
+  if personName.length >= 3
+    personName = personName.values_at(0, -1)
+  end
+  personName = personName.join("+")
+  character_page_url = search_wikia(personName)
+  
+  if character_page_url != nil
+    html_doc = Nokogiri::HTML(open(character_page_url))
+    photo_url = html_doc.search('.pi-image-thumbnail').first.attribute('src').value
+  else
+    photo_url = ""
+  end
 
-  html_doc = Nokogiri::HTML(open(character_page_url))
-  photo_url = html_doc.search('.pi-image-thumbnail').first.attribute('src').value
   new_person = Person.new(
     name: person["name"],
     height: person["height"],
@@ -36,11 +80,13 @@ people.take(10).each do |person|
     eye_color: person["eye_color"],
     birth_year: person["birth_year"],
     gender: person["gender"],
-    species: new_species,
     homeworld: new_homeworld,
     photo_url: photo_url
   )
+  new_person.species =  Species.find_by(name: new_species)
   new_person.save
-  # puts person
 end
-puts "seeding done."
+puts ""
+puts "--------------"
+puts " seeding done."
+puts "--------------"

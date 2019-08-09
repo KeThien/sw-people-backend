@@ -1,0 +1,14 @@
+{
+  "person": {
+    "name": "",
+    "species": "",
+    "gender": "",
+    "homeworld": "",
+    "height": "",
+    "mass": "",
+    "birth_year": "",
+    "skin_color": "",
+    "hair_color": "",
+    "eye_color": ""
+  }
+}
