@@ -9,7 +9,6 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
 import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
@@ -17,16 +16,15 @@ import FormControl from '@material-ui/core/FormControl'
 
 export class PersonInfo extends Component {
   state = {
-    species: [
+    speciesList: [
       { value: 'Human', label: 'Human' },
       { value: 'Droid', label: 'Droid' },
       { value: 'Hutt', label: 'Hutt' }
     ],
-    gender: [
+    genderList: [
       { value: 'male', label: 'male' },
       { value: 'female', label: 'female' },
       { value: 'hermaphrodite', label: 'hermaphrodite' },
-      { value: 'hutt', label: 'hutt' },
       { value: 'none', label: 'none' }
     ],
     person: {
@@ -59,21 +57,36 @@ export class PersonInfo extends Component {
   handleChange = e => {
     // console.log(e.target.name, e.target.value)
     e.preventDefault()
-
+    const { name, value } = e.target
     this.setState(prevState => ({
       person: {
         ...prevState.person,
-        homeworld: value
+        [name]: value
       }
     }))
-
     // VALIDATIONS on Form change
-
-    const { name, value } = e.target
     let errors = this.state.errors
     switch (name) {
       case 'homeworld':
         errors.homeworld = value.length < 4 ? 'Must be 4 characters long!' : ''
+        break
+      case 'height':
+        errors.height = /^\d+$/.test(value) ? '' : 'Must be a number!'
+        break
+      case 'mass':
+        errors.mass = /^\d+$/.test(value) ? '' : 'Must be a number!'
+        break
+      case 'birth_year':
+        errors.birth_year = value.length < 4 ? 'Must be 4 characters long!' : ''
+        break
+      case 'skin_color':
+        errors.skin_color = value.length < 4 ? 'Must be 4 characters long!' : ''
+        break
+      case 'hair_color':
+        errors.hair_color = value.length < 4 ? 'Must be 3 characters long!' : ''
+        break
+      case 'eye_color':
+        errors.eye_color = value.length < 4 ? 'Must be 4 characters long!' : ''
         break
       default:
         break
@@ -91,15 +104,7 @@ export class PersonInfo extends Component {
       this.props.handleMode('edit')
       this.setState({
         person: {
-          species: this.props.person.species,
-          gender: this.props.person.gender,
-          homeworld: this.props.person.homeworld,
-          height: this.props.person.height,
-          mass: this.props.person.mass,
-          birth_year: this.props.person.birth_year,
-          skin_color: this.props.person.skin_color,
-          hair_color: this.props.person.hair_color,
-          eye_color: this.props.person.eye_color
+          ...this.props.person
         }
       })
     } else if (e === 'view') {
@@ -116,7 +121,7 @@ export class PersonInfo extends Component {
     if (this.props.person.name && this.props.mode === 'view') {
       return (
         <Container>
-          <Grid container style={GridContainerStyle}>
+          <Grid container spacing={3}>
             <Grid item xs={7} className="text-align-left">
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <ul style={styleList}>
@@ -170,7 +175,7 @@ export class PersonInfo extends Component {
     } else if (this.props.person.name && this.props.mode === 'edit') {
       return (
         <Container>
-          <Grid container style={GridContainerStyle}>
+          <Grid container spacing={3}>
             <Grid item xs={7} className="text-align-left">
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <div>
@@ -179,10 +184,15 @@ export class PersonInfo extends Component {
                   autoComplete="off"
                   style={formStyle}
                 >
-                  <FormControl margin="normal">
+                  <FormControl fullWidth margin="dense">
                     <InputLabel>species</InputLabel>
-                    <Select value={this.props.person.species} required={true}>
-                      {this.state.species.map((option, i) => {
+                    <Select
+                      name="species"
+                      value={this.state.person.species}
+                      required={true}
+                      onChange={e => this.handleChange(e)}
+                    >
+                      {this.state.speciesList.map((option, i) => {
                         return (
                           <MenuItem key={i} value={option.value}>
                             {option.value}
@@ -191,10 +201,15 @@ export class PersonInfo extends Component {
                       })}
                     </Select>
                   </FormControl>
-                  <FormControl margin="normal">
+                  <FormControl fullWidth margin="dense">
                     <InputLabel>gender</InputLabel>
-                    <Select value={this.props.person.gender} required={true}>
-                      {this.state.gender.map((option, i) => {
+                    <Select
+                      name="gender"
+                      value={this.state.person.gender}
+                      required={true}
+                      onChange={e => this.handleChange(e)}
+                    >
+                      {this.state.genderList.map((option, i) => {
                         return (
                           <MenuItem key={i} value={option.value}>
                             {option.value}
@@ -203,7 +218,12 @@ export class PersonInfo extends Component {
                       })}
                     </Select>
                   </FormControl>
-                  <FormControl error={this.state.errors.homeworld !== ''}>
+
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.homeworld !== ''}
+                  >
                     <InputLabel>homeworld</InputLabel>
                     <Input
                       name="homeworld"
@@ -215,53 +235,97 @@ export class PersonInfo extends Component {
                       {this.state.errors.homeworld}
                     </FormHelperText>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="height"
-                      defaultValue={this.props.person.height}
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.height !== ''}
+                  >
+                    <InputLabel>height</InputLabel>
+                    <Input
+                      name="height"
                       required={true}
-                      margin="normal"
+                      value={this.state.person.height}
+                      onChange={e => this.handleChange(e)}
                     />
+                    <FormHelperText>{this.state.errors.height}</FormHelperText>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="mass"
-                      defaultValue={this.props.person.mass}
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.mass !== ''}
+                  >
+                    <InputLabel>mass</InputLabel>
+                    <Input
+                      name="mass"
                       required={true}
-                      margin="normal"
+                      value={this.state.person.mass}
+                      onChange={e => this.handleChange(e)}
                     />
+                    <FormHelperText>{this.state.errors.mass}</FormHelperText>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="birth year"
-                      defaultValue={this.props.person.birth_year}
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.birth_year !== ''}
+                  >
+                    <InputLabel>birth year</InputLabel>
+                    <Input
+                      name="birth_year"
                       required={true}
-                      margin="normal"
+                      value={this.state.person.birth_year}
+                      onChange={e => this.handleChange(e)}
                     />
+                    <FormHelperText>
+                      {this.state.errors.birth_year}
+                    </FormHelperText>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="skin color"
-                      defaultValue={this.props.person.skin_color}
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.skin_color !== ''}
+                  >
+                    <InputLabel>skin color</InputLabel>
+                    <Input
+                      name="skin_color"
                       required={true}
-                      margin="normal"
+                      value={this.state.person.skin_color}
+                      onChange={e => this.handleChange(e)}
                     />
+                    <FormHelperText>
+                      {this.state.errors.skin_color}
+                    </FormHelperText>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="hair color"
-                      defaultValue={this.props.person.hair_color}
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.hair_color !== ''}
+                  >
+                    <InputLabel>hair color</InputLabel>
+                    <Input
+                      name="hair_color"
                       required={true}
-                      margin="normal"
+                      value={this.state.person.hair_color}
+                      onChange={e => this.handleChange(e)}
                     />
+                    <FormHelperText>
+                      {this.state.errors.hair_color}
+                    </FormHelperText>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="eye color"
-                      defaultValue={this.props.person.eye_color}
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={this.state.errors.eye_color !== ''}
+                  >
+                    <InputLabel>eye color</InputLabel>
+                    <Input
+                      name="eye_color"
                       required={true}
-                      margin="normal"
+                      value={this.state.person.eye_color}
+                      onChange={e => this.handleChange(e)}
                     />
+                    <FormHelperText>
+                      {this.state.errors.eye_color}
+                    </FormHelperText>
                   </FormControl>
                 </form>
               </div>
@@ -315,16 +379,17 @@ const nameStyle = {
   margin: '10px 0px'
 }
 const avatarStyle = {
-  width: '100%'
+  width: '100%',
+  borderRadius: '20px'
 }
-const GridContainerStyle = {
-  padding: '32px 0'
-}
+
 const formStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  paddingRight: '32px',
-  margin: '10px 0'
+  // display: 'flex',
+  // flexDirection: 'column',
+  // justifyContent: 'space-between',
+  // alignItems: 'flex-start'
+  // // paddingRight: '32px',
+  // // margin: '10px 0'
 }
 const buttonStyle = {
   marginRight: '10px'

@@ -60,7 +60,7 @@ export class PeopleList extends Component {
           </Grid>
           <Grid item xs={12} sm={7}>
             <Hidden xsDown>
-              <Paper>
+              <Paper style={paperStyle}>
                 <PersonInfo
                   person={this.state.person}
                   handleMode={this.handleMode}
@@ -75,8 +75,9 @@ export class PeopleList extends Component {
   }
 }
 
-// const paperStyle = {
-//   maxHeight: '100vh'
-// }
+const paperStyle = {
+  maxHeight: '100vh',
+  padding: '32px 0'
+}
 
 export default PeopleList
