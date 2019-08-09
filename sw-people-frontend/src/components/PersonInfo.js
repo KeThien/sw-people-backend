@@ -15,17 +15,12 @@ import FormControl from '@material-ui/core/FormControl'
 
 export class PersonInfo extends Component {
   state = {
-    speciesList: [
-      { value: 'Human', label: 'Human' },
-      { value: 'Droid', label: 'Droid' },
-      { value: 'Hutt', label: 'Hutt' }
-    ],
     genderList: [
-      { value: 'male', label: 'male' },
-      { value: 'female', label: 'female' },
-      { value: 'hermaphrodite', label: 'hermaphrodite' },
-      { value: 'none', label: 'none' },
-      { value: 'n/a', label: 'n/a' }
+      { value: 'male' },
+      { value: 'female' },
+      { value: 'hermaphrodite' },
+      { value: 'none' },
+      { value: 'n/a' }
     ],
     person: {
       name: '',
@@ -106,7 +101,7 @@ export class PersonInfo extends Component {
       this.setState({
         person: {
           name: this.props.person.name,
-          species: this.props.person.species,
+          species_id: this.props.person.species_id,
           gender: this.props.person.gender,
           homeworld: this.props.person.homeworld,
           height: this.props.person.height,
@@ -136,6 +131,9 @@ export class PersonInfo extends Component {
   }
   render() {
     if (this.props.person.name && this.props.mode === 'view') {
+      const speciesName = this.props.speciesList.filter(
+        species => species.id === this.props.person.species_id
+      )[0].value
       return (
         <Container>
           <Grid container spacing={3}>
@@ -143,7 +141,7 @@ export class PersonInfo extends Component {
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <ul style={styleList}>
                 <li>
-                  species: <strong>{this.props.person.species}</strong>
+                  species: <strong>{speciesName}</strong>
                 </li>
                 <li>
                   gender: <strong>{this.props.person.gender}</strong>
@@ -204,14 +202,14 @@ export class PersonInfo extends Component {
                   <FormControl fullWidth margin="dense">
                     <InputLabel>species</InputLabel>
                     <Select
-                      name="species"
-                      value={this.state.person.species}
+                      name="species_id"
+                      value={this.state.person.species_id}
                       required={true}
                       onChange={e => this.handleChange(e)}
                     >
-                      {this.state.speciesList.map((option, i) => {
+                      {this.props.speciesList.map((option, i) => {
                         return (
-                          <MenuItem key={i} value={option.value}>
+                          <MenuItem key={i} value={option.id}>
                             {option.value}
                           </MenuItem>
                         )

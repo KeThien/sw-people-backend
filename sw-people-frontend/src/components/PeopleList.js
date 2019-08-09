@@ -13,6 +13,7 @@ import PersonInfo from './PersonInfo'
 export class PeopleList extends Component {
   state = {
     people: [],
+    speciesList: [],
     person: {},
     mode: ''
   }
@@ -26,6 +27,16 @@ export class PeopleList extends Component {
   }
   componentDidMount() {
     this.getPeople()
+    axios
+      .get('/api/v1/species')
+      .then(res => {
+        this.setState({
+          speciesList: res.data.map(species => {
+            return { id: species.id, value: species.name }
+          })
+        })
+      })
+      .catch(error => console.log(error))
   }
   handleClick = id => {
     const person = this.state.people.filter(person => {
@@ -42,7 +53,7 @@ export class PeopleList extends Component {
     this.setState({ mode: 'view' })
     // console.log('submit', this.state.person.id)
     this.setState({ person: { ...person } })
-    // console.log(this.state.person)
+    console.log(this.state.person)
     this.setState(prevState => ({
       people: prevState.people.map(prevPerson => {
         if (prevPerson.id === this.state.person.id) {
@@ -81,6 +92,7 @@ export class PeopleList extends Component {
                 handleMode={this.handleMode}
                 mode={this.state.mode}
                 handleSubmit={this.handleSubmit}
+                speciesList={this.state.speciesList}
               />
             </Paper>
           </Grid>
