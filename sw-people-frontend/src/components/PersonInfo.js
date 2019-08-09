@@ -17,7 +17,6 @@ import FormControl from '@material-ui/core/FormControl'
 
 export class PersonInfo extends Component {
   state = {
-    mode: 'view',
     species: [
       { value: 'Human', label: 'Human' },
       { value: 'Droid', label: 'Droid' },
@@ -40,9 +39,53 @@ export class PersonInfo extends Component {
       skin_color: '',
       hair_color: '',
       eye_color: ''
-    }
+    },
+    errors: {
+      species: '',
+      gender: '',
+      homeworld: '',
+      height: '',
+      mass: '',
+      birth_year: '',
+      skin_color: '',
+      hair_color: '',
+      eye_color: ''
+    },
+    isFormValid: ''
   }
+  componentDidMount() {
+    this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
+  }
+  handleChange = e => {
+    // console.log(e.target.name, e.target.value)
+    e.preventDefault()
 
+    this.setState(prevState => ({
+      person: {
+        ...prevState.person,
+        homeworld: value
+      }
+    }))
+
+    // VALIDATIONS on Form change
+
+    const { name, value } = e.target
+    let errors = this.state.errors
+    switch (name) {
+      case 'homeworld':
+        errors.homeworld = value.length < 4 ? 'Must be 4 characters long!' : ''
+        break
+      default:
+        break
+    }
+    this.setState({ errors, [name]: value }, () => {
+      // console.log(errors)
+    })
+    this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
+  }
+  checkObjEmpty(obj) {
+    return Object.values(obj).every(x => x === null || x === '')
+  }
   handleClickMode = e => {
     if (e === 'edit') {
       this.props.handleMode('edit')
@@ -63,16 +106,7 @@ export class PersonInfo extends Component {
       this.props.handleMode('view')
     }
   }
-  handleChange = (prop, e) => {
-    console.log(prop, e.target.value)
-    const value = e.target.value
-    this.setState(prevState => ({
-      person: {
-        ...prevState.person,
-        homeworld: value
-      }
-    }))
-  }
+
   handleSubmit = e => {
     e.preventDefault()
     this.setState({ mode: 'view' })
@@ -169,14 +203,17 @@ export class PersonInfo extends Component {
                       })}
                     </Select>
                   </FormControl>
-                  <FormControl>
+                  <FormControl error={this.state.errors.homeworld !== ''}>
                     <InputLabel>homeworld</InputLabel>
                     <Input
+                      name="homeworld"
                       required={true}
-                      defaultValue={this.props.person.homeworld}
-                      onChange={e => this.handleChange('homeworld', e)}
+                      value={this.state.person.homeworld}
+                      onChange={e => this.handleChange(e)}
                     />
-                    <FormHelperText> </FormHelperText>
+                    <FormHelperText>
+                      {this.state.errors.homeworld}
+                    </FormHelperText>
                   </FormControl>
                   <FormControl>
                     <TextField
@@ -241,6 +278,7 @@ export class PersonInfo extends Component {
                 size="small"
                 color="secondary"
                 type="submit"
+                disabled={!this.state.isFormValid}
               >
                 Submit
               </Button>

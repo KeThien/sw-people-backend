@@ -34,7 +34,7 @@ export class PeopleList extends Component {
     this.setState({ mode: 'view' })
   }
   handleMode = e => {
-    console.log(e)
+    console.log(e, 'mode')
     this.setState({ mode: e })
   }
   render() {
