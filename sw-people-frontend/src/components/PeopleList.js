@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import './People.css'
-import Row from 'muicss/lib/react/row'
-import Col from 'muicss/lib/react/col'
-import Container from 'muicss/lib/react/container'
-import Panel from 'muicss/lib/react/panel'
-import Button from 'muicss/lib/react/button'
-import Divider from 'muicss/lib/react/divider'
+import Container from '@material-ui/core/Container'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import Hidden from '@material-ui/core/Hidden'
+import Divider from '@material-ui/core/Divider'
 import axios from 'axios'
 import PersonInfo from './PersonInfo'
 
@@ -39,14 +39,13 @@ export class PeopleList extends Component {
   render() {
     return (
       <Container>
-        <Row>
-          <Col xs="12" md="5">
-            <Panel style={panelStyle}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={5}>
+            <Paper>
               {this.state.people.map(person => {
                 return (
                   <div key={person.id}>
                     <Button
-                      variant="flat"
                       color="primary"
                       onClick={() => this.handleClick(person.id)}
                     >
@@ -56,23 +55,23 @@ export class PeopleList extends Component {
                   </div>
                 )
               })}
-            </Panel>
-          </Col>
-          <Col xs="12" md="7">
-            <div>
-              <Panel id="info-panel" className="mui--hidden-xs mui--hidden-sm">
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={7}>
+            <Hidden xsDown>
+              <Paper>
                 <PersonInfo person={this.state.person} />
-              </Panel>
-            </div>
-          </Col>
-        </Row>
+              </Paper>
+            </Hidden>
+          </Grid>
+        </Grid>
       </Container>
     )
   }
 }
 
-const panelStyle = {
-  maxHeight: '100vh'
-}
+// const paperStyle = {
+//   maxHeight: '100vh'
+// }
 
 export default PeopleList

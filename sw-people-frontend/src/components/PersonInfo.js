@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
+import './People.css'
+
 import axios from 'axios'
 import update from 'immutability-helper'
 
-import Row from 'muicss/lib/react/row'
-import Col from 'muicss/lib/react/col'
-import Container from 'muicss/lib/react/container'
-import Button from 'muicss/lib/react/button'
-import Form from 'muicss/lib/react/form'
-import Input from 'muicss/lib/react/input'
-import Option from 'muicss/lib/react/option'
-import Select from 'muicss/lib/react/select'
+import Container from '@material-ui/core/Container'
+import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
 
 export class PersonInfo extends Component {
   state = {
@@ -25,7 +28,8 @@ export class PersonInfo extends Component {
       { value: 'hermaphrodite', label: 'hermaphrodite' },
       { value: 'hutt', label: 'hutt' },
       { value: 'none', label: 'none' }
-    ]
+    ],
+    person: this.props.person
   }
   handleClickMode = e => {
     if (e === 'edit') {
@@ -34,17 +38,19 @@ export class PersonInfo extends Component {
       this.setState({ mode: 'view' })
     }
   }
+  handleChange = e => {}
   handleSubmit = e => {
     e.preventDefault()
     this.setState({ mode: 'view' })
     console.log('submit')
   }
+  componentDidMount() {}
   render() {
     if (this.props.person.name && this.state.mode === 'view') {
       return (
         <Container>
-          <Row>
-            <Col xs="7" className="mui--text-left">
+          <Grid container style={GridContainerStyle}>
+            <Grid item xs={7} className="text-align-left">
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <ul style={styleList}>
                 <li>
@@ -77,140 +83,176 @@ export class PersonInfo extends Component {
               </ul>
               <Button
                 size="small"
-                color="accent"
+                variant="outlined"
+                color="secondary"
                 onClick={() => this.handleClickMode('edit')}
               >
                 Edit
               </Button>
-            </Col>
-            <Col xs="5">
+            </Grid>
+            <Grid item xs={5}>
               <img
                 src={this.props.person.photo_url}
                 alt="avatar"
                 style={avatarStyle}
               />
-            </Col>
-          </Row>
+            </Grid>
+          </Grid>
         </Container>
       )
     } else if (this.props.person.name && this.state.mode === 'edit') {
       return (
         <Container>
-          <Row>
-            <Col xs="7" className="mui--text-left">
+          <Grid container style={GridContainerStyle}>
+            <Grid item xs={7} className="text-align-left">
               <h2 style={nameStyle}>{this.props.person.name}</h2>
-              <Form onSubmit={this.handleSubmit}>
-                <Select
-                  name="species"
-                  label="species"
-                  defaultValue={this.props.person.species}
-                >
-                  {this.state.species.map((option, i) => {
-                    return (
-                      <Option
-                        key={i}
-                        value={option.value}
-                        label={option.label}
-                      />
-                    )
-                  })}
-                </Select>
-                <Select
-                  name="gender"
-                  label="gender"
-                  defaultValue={this.props.person.gender}
-                >
-                  {this.state.gender.map((option, i) => {
-                    return (
-                      <Option
-                        key={i}
-                        value={option.value}
-                        label={option.label}
-                      />
-                    )
-                  })}
-                </Select>
-                <Input
-                  label="homeworld"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.homeworld}
-                  required={true}
-                />
-                <Input
-                  label="height"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.height}
-                  required={true}
-                />
-                <Input
-                  label="mass"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.mass}
-                  required={true}
-                />
-                <Input
-                  label="birth year"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.birth_year}
-                  required={true}
-                />
-                <Input
-                  label="skin color"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.skin_color}
-                  required={true}
-                />
-                <Input
-                  label="hair color"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.hair_color}
-                  required={true}
-                />
-                <Input
-                  label="eye color"
-                  floatingLabel={true}
-                  defaultValue={this.props.person.eye_color}
-                  required={true}
-                />
-                <Button
-                  size="small"
-                  variant="flat"
-                  onClick={() => this.handleClickMode('view')}
-                >
-                  Cancel
-                </Button>
-                <Button size="small" color="accent" type="submit">
-                  Submit
-                </Button>
-              </Form>
-            </Col>
-            <Col xs="5">
+              <div style={formStyle}>
+                <form onSubmit={this.handleSubmit} autoComplete="off">
+                  <FormControl margin="normal">
+                    <InputLabel>species</InputLabel>
+                    <Select value={this.props.person.species} required={true}>
+                      {this.state.species.map((option, i) => {
+                        return (
+                          <MenuItem key={i} value={option.value}>
+                            {option.value}
+                          </MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl>
+                  <FormControl margin="normal">
+                    <InputLabel>gender</InputLabel>
+                    <Select value={this.props.person.gender} required={true}>
+                      {this.state.gender.map((option, i) => {
+                        return (
+                          <MenuItem key={i} value={option.value}>
+                            {option.value}
+                          </MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="homeworld"
+                      defaultValue={this.props.person.homeworld}
+                      required={true}
+                      margin="normal"
+                      onChange={this.handleChange('homeworld')}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="height"
+                      defaultValue={this.props.person.height}
+                      required={true}
+                      margin="normal"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="mass"
+                      defaultValue={this.props.person.mass}
+                      required={true}
+                      margin="normal"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="birth year"
+                      defaultValue={this.props.person.birth_year}
+                      required={true}
+                      margin="normal"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="skin color"
+                      defaultValue={this.props.person.skin_color}
+                      required={true}
+                      margin="normal"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="hair color"
+                      defaultValue={this.props.person.hair_color}
+                      required={true}
+                      margin="normal"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="eye color"
+                      defaultValue={this.props.person.eye_color}
+                      required={true}
+                      margin="normal"
+                    />
+                  </FormControl>
+                </form>
+              </div>
+              <Button
+                style={buttonStyle}
+                variant="outlined"
+                size="small"
+                onClick={() => this.handleClickMode('view')}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                color="secondary"
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Grid>
+            <Grid item xs={5}>
               <img
                 src={this.props.person.photo_url}
                 alt="avatar"
                 style={avatarStyle}
               />
-            </Col>
-          </Row>
+            </Grid>
+          </Grid>
         </Container>
       )
     } else {
       return (
-        <div className="mui--text-left">
-          <h2 style={nameStyle}>Select a character</h2>
-        </div>
+        <Container>
+          <Grid container>
+            <Grid item>
+              <h2 style={nameStyle}>Select a character</h2>
+            </Grid>
+          </Grid>
+        </Container>
       )
     }
   }
 }
 const styleList = {
   listStyle: 'none',
-  paddingLeft: '0px'
+  paddingLeft: '0px',
+  lineHeight: '23px'
 }
 const nameStyle = {
-  margin: '5px 0px'
+  margin: '10px 0px'
 }
 const avatarStyle = {
   width: '100%'
 }
+const GridContainerStyle = {
+  padding: '32px 0'
+}
+const formStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  paddingRight: '32px',
+  margin: '10px 0'
+}
+const buttonStyle = {
+  marginRight: '10px'
+}
+
 export default PersonInfo
