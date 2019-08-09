@@ -28,6 +28,7 @@ export class PersonInfo extends Component {
       { value: 'none', label: 'none' }
     ],
     person: {
+      name: '',
       species: '',
       gender: '',
       homeworld: '',
@@ -104,7 +105,16 @@ export class PersonInfo extends Component {
       this.props.handleMode('edit')
       this.setState({
         person: {
-          ...this.props.person
+          name: this.props.person.name,
+          species: this.props.person.species,
+          gender: this.props.person.gender,
+          homeworld: this.props.person.homeworld,
+          height: this.props.person.height,
+          mass: this.props.person.mass,
+          birth_year: this.props.person.birth_year,
+          skin_color: this.props.person.skin_color,
+          hair_color: this.props.person.hair_color,
+          eye_color: this.props.person.eye_color
         }
       })
     } else if (e === 'view') {
@@ -343,6 +353,7 @@ export class PersonInfo extends Component {
                 color="secondary"
                 type="submit"
                 disabled={!this.state.isFormValid}
+                onClick={e => this.handleSubmit(e)}
               >
                 Submit
               </Button>
