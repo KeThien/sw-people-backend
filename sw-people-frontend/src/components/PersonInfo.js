@@ -390,13 +390,12 @@ export class PersonInfo extends Component {
       )
     } else {
       return (
-        <Container>
-          <Grid container>
-            <Grid item xs={12}>
-              <h2 style={{ textAlign: 'center' }}>Select a character</h2>
-            </Grid>
+        <Grid container>
+          <Grid item xs={12}>
+            <h2 style={{ textAlign: 'center' }}>Welcome to my test project</h2>
+            <p style={{ textAlign: 'center' }}>Please select a character</p>
           </Grid>
-        </Container>
+        </Grid>
       )
     }
   }
