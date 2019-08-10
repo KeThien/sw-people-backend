@@ -1,0 +1,13 @@
+{
+  "name": "sw-people",
+  "license": "MIT",
+  "engines": {
+    "node": "10.16.1",
+    "yarn": "1.17.3"
+  },
+  "scripts": {
+    "build": "yarn --cwd sw-people-frontend install && yarn --cwd sw-people-frontend build",
+    "deploy": "cp -a sw-people-frontend/build/. public/",
+    "heroku-postbuild": "yarn build && yarn deploy"
+  }
+}

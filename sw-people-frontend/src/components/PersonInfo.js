@@ -12,7 +12,6 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
-import { textAlign } from '@material-ui/system'
 
 export class PersonInfo extends Component {
   state = {
