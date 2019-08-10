@@ -8,6 +8,11 @@ import SnackBar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import InputLabel from '@material-ui/core/InputLabel'
+
 import axios from 'axios'
 
 import PersonInfo from './PersonInfo'
@@ -16,11 +21,13 @@ export class PeopleList extends Component {
   state = {
     people: [],
     speciesList: [],
+    filterSpeciesList: [],
     person: {},
     mode: '',
     snackOpen: false,
     snackMessage: '',
-    snackColor: ''
+    snackColor: '',
+    selectSpecies_id: 0
   }
   getPeople() {
     axios
@@ -82,26 +89,59 @@ export class PeopleList extends Component {
   handleClose = e => {
     this.setState({ snackOpen: false })
   }
+  handleSelect = e => {
+    e.preventDefault()
+    const { value } = e.target
+    this.setState({
+      selectSpecies_id: value
+    })
+  }
   render() {
     return (
       <Container>
         <Grid container spacing={3} wrap="wrap-reverse">
           <Grid item xs={12} sm={5}>
-            <Paper style={listPaperStyle}>
-              {this.state.people.map(person => {
-                return (
-                  <div key={person.id}>
-                    <Button
-                      color="primary"
-                      onClick={() => this.handleClick(person.id)}
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Paper style={filterPaperStyle}>
+                  <FormControl fullWidth>
+                    <InputLabel>species</InputLabel>
+                    <Select
+                      name="species_id"
+                      value={this.state.selectSpecies_id}
+                      required={true}
+                      onChange={e => this.handleSelect(e)}
                     >
-                      {person.name}
-                    </Button>
-                    <Divider />
-                  </div>
-                )
-              })}
-            </Paper>
+                      <MenuItem value={0}>All</MenuItem>
+                      {this.state.speciesList.map((option, i) => {
+                        return (
+                          <MenuItem key={i} value={option.id}>
+                            {option.value}
+                          </MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl>
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper style={listPaperStyle}>
+                  {this.state.people.map(person => {
+                    return (
+                      <div key={person.id}>
+                        <Button
+                          color="primary"
+                          onClick={() => this.handleClick(person.id)}
+                        >
+                          {person.name}
+                        </Button>
+                        <Divider />
+                      </div>
+                    )
+                  })}
+                </Paper>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={7}>
             <Paper style={paperStyle}>
@@ -153,5 +193,10 @@ const listPaperStyle = {
   overflowY: 'scroll',
   boxSizing: 'border-box',
   textAlign: 'center'
+}
+
+const filterPaperStyle = {
+  height: '50px',
+  padding: '10px'
 }
 export default PeopleList
