@@ -108,6 +108,7 @@ const paperStyle = {
 const listPaperStyle = {
   maxHeight: '185px',
   overflowY: 'scroll',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
+  textAlign: 'center'
 }
 export default PeopleList
