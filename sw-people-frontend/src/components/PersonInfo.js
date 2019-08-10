@@ -14,6 +14,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 import Fade from '@material-ui/core/Fade'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import StarIcon from '@material-ui/icons/Star'
 
 export class PersonInfo extends Component {
   state = {
@@ -49,7 +50,8 @@ export class PersonInfo extends Component {
     },
     isFormValid: '',
     flagApiSuccess: false,
-    isLoading: false
+    isLoading: false,
+    isFavorite: true
   }
   componentDidMount() {
     this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
@@ -148,9 +150,9 @@ export class PersonInfo extends Component {
         species => species.id === this.props.person.species_id
       )[0].value
       return (
-        <Container>
+        <Container style={parentFavoriteStyle}>
           <Grid container spacing={3}>
-            <Grid item xs={7} className="text-align-left">
+            <Grid item xs={7}>
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <ul style={styleList}>
                 <li>
@@ -197,6 +199,7 @@ export class PersonInfo extends Component {
                 style={avatarStyle}
               />
             </Grid>
+            {this.props.favorite ? <StarIcon style={favoriteStyle} /> : null}
           </Grid>
         </Container>
       )
@@ -419,6 +422,17 @@ const buttonStyle = {
 const buttonGroupStyle = {
   display: 'flex',
   alignItems: 'center'
+}
+const favoriteStyle = {
+  position: 'absolute',
+  top: '-40px',
+  right: '-20px',
+  cursor: 'pointer',
+  fontSize: '40px',
+  color: 'gold'
+}
+const parentFavoriteStyle = {
+  position: 'relative'
 }
 
 export default PersonInfo

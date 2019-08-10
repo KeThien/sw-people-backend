@@ -116,7 +116,7 @@ export class PeopleList extends Component {
               <Grid item xs={12}>
                 <FormControl fullWidth style={filterStyle}>
                   <InputLabel style={{ textAlign: 'center' }}>
-                    by species
+                    filter by
                   </InputLabel>
                   <Select
                     name="species_id"
@@ -124,6 +124,9 @@ export class PeopleList extends Component {
                     required={true}
                     onChange={e => this.handleSelect(e)}
                   >
+                    <MenuItem value={-1}>
+                      <em>Favorites</em>
+                    </MenuItem>
                     <MenuItem value={0}>
                       <em>All species</em>
                     </MenuItem>
@@ -171,6 +174,7 @@ export class PeopleList extends Component {
                 mode={this.state.mode}
                 handleSubmit={this.handleSubmit}
                 speciesList={this.state.speciesList}
+                favorite={true}
               />
             </Paper>
           </Grid>
