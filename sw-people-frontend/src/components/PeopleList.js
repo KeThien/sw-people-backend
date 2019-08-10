@@ -99,30 +99,30 @@ export class PeopleList extends Component {
   render() {
     return (
       <Container>
-        <Grid container spacing={3} wrap="wrap-reverse">
+        <Grid container spacing={1} wrap="wrap-reverse">
           <Grid item xs={12} sm={5}>
-            <Grid container spacing={1}>
+            <Grid container spacing={1} justify="center">
               <Grid item xs={12}>
-                <Paper style={filterPaperStyle}>
-                  <FormControl fullWidth>
-                    <InputLabel>species</InputLabel>
-                    <Select
-                      name="species_id"
-                      value={this.state.selectSpecies_id}
-                      required={true}
-                      onChange={e => this.handleSelect(e)}
-                    >
-                      <MenuItem value={0}>All</MenuItem>
-                      {this.state.speciesList.map((option, i) => {
-                        return (
-                          <MenuItem key={i} value={option.id}>
-                            {option.value}
-                          </MenuItem>
-                        )
-                      })}
-                    </Select>
-                  </FormControl>
-                </Paper>
+                <FormControl fullWidth style={filterStyle}>
+                  <InputLabel style={{ textAlign: 'center' }}>
+                    species
+                  </InputLabel>
+                  <Select
+                    name="species_id"
+                    value={this.state.selectSpecies_id}
+                    required={true}
+                    onChange={e => this.handleSelect(e)}
+                  >
+                    <MenuItem value={0}>All</MenuItem>
+                    {this.state.speciesList.map((option, i) => {
+                      return (
+                        <MenuItem key={i} value={option.id}>
+                          {option.value}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <Paper style={listPaperStyle}>
@@ -194,9 +194,9 @@ const listPaperStyle = {
   boxSizing: 'border-box',
   textAlign: 'center'
 }
-
-const filterPaperStyle = {
-  height: '50px',
-  padding: '10px'
+const filterStyle = {
+  textAlign: 'center',
+  padding: '0px',
+  boxSizing: 'border-box'
 }
 export default PeopleList
