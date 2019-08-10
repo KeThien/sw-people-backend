@@ -21,7 +21,7 @@ export class PeopleList extends Component {
   state = {
     people: [],
     speciesList: [],
-    filterSpeciesList: [],
+    filterPeopleList: [],
     person: {},
     mode: '',
     snackOpen: false,
@@ -47,7 +47,7 @@ export class PeopleList extends Component {
             return { id: species.id, value: species.name }
           })
         })
-        this.setState({ filterSpeciesList: this.state.people })
+        this.setState({ filterPeopleList: this.state.people })
       })
       .catch(error => console.log(error))
   }
@@ -93,13 +93,13 @@ export class PeopleList extends Component {
   handleSelect = e => {
     e.preventDefault()
     const { value } = e.target
-    const filterSpeciesList =
+    const filterPeopleList =
       value === 0
         ? this.state.people
         : this.state.people.filter(p => p.species_id === value)
     this.setState({
       selectSpecies_id: value,
-      filterSpeciesList
+      filterPeopleList
     })
   }
   render() {
