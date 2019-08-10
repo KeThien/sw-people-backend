@@ -12,6 +12,8 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
+import Fade from '@material-ui/core/Fade'
+import { CircularProgress } from '@material-ui/core'
 
 export class PersonInfo extends Component {
   state = {
@@ -46,7 +48,8 @@ export class PersonInfo extends Component {
       eye_color: ''
     },
     isFormValid: '',
-    flagApiSuccess: false
+    flagApiSuccess: false,
+    isLoading: false
   }
   componentDidMount() {
     this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
@@ -123,7 +126,7 @@ export class PersonInfo extends Component {
     e.preventDefault()
     const id = this.props.person.id
     this.setState({ mode: 'view' })
-    // loading logic for button
+    this.setState({ isLoading: true })
     axios
       .patch(`/api/v1/people/${id}`, this.state.person)
       .then(response => {
@@ -133,6 +136,7 @@ export class PersonInfo extends Component {
           { ...this.props.person, ...this.state.person },
           this.state.flagApiSuccess
         ])
+        this.setState({ isLoading: false })
       })
       .catch(error => {
         console.log(error)
@@ -349,24 +353,30 @@ export class PersonInfo extends Component {
                   </FormControl>
                 </form>
               </div>
-              <Button
-                style={buttonStyle}
-                variant="outlined"
-                size="small"
-                onClick={() => this.handleClickMode('view')}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                color="secondary"
-                type="submit"
-                disabled={!this.state.isFormValid}
-                onClick={e => this.handleSubmit(e)}
-              >
-                Submit
-              </Button>
+              <div style={buttonGroupStyle}>
+                <Button
+                  style={buttonStyle}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => this.handleClickMode('view')}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  style={buttonStyle}
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  type="submit"
+                  disabled={!this.state.isFormValid}
+                  onClick={e => this.handleSubmit(e)}
+                >
+                  Submit
+                </Button>
+                <Fade in={this.state.isLoading}>
+                  <CircularProgress size={24} color="secondary" />
+                </Fade>
+              </div>
             </Grid>
             <Grid item xs={5}>
               <img
@@ -406,6 +416,10 @@ const avatarStyle = {
 }
 const buttonStyle = {
   marginRight: '10px'
+}
+const buttonGroupStyle = {
+  display: 'flex',
+  alignItems: 'center'
 }
 
 export default PersonInfo

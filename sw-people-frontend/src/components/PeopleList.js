@@ -117,7 +117,7 @@ export class PeopleList extends Component {
         </Grid>
         <SnackBar
           anchorOrigin={{
-            vertical: 'top',
+            vertical: 'bottom',
             horizontal: 'right'
           }}
           open={this.state.snackOpen}
