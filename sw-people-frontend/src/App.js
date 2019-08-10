@@ -5,7 +5,7 @@ import PeopleList from './components/PeopleList'
 function App() {
   return (
     <div className="App">
-      <h1>Star Wars Characters</h1>
+      <h1 style={{ textAlign: 'center' }}>Star Wars Characters</h1>
       <PeopleList />
     </div>
   )

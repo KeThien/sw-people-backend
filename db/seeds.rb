@@ -72,15 +72,15 @@ people.each do |person|
   end
 
   new_person = Person.new(
-    name: person["name"],
-    height: person["height"],
-    mass: person["mass"],
-    hair_color: person["hair_color"],
-    skin_color: person["skin_color"],
-    eye_color: person["eye_color"],
-    birth_year: person["birth_year"],
-    gender: person["gender"],
-    homeworld: new_homeworld,
+    name: person["name"].strip,
+    height: person["height"].strip,
+    mass: person["mass"].strip,
+    hair_color: person["hair_color"].strip,
+    skin_color: person["skin_color"].strip,
+    eye_color: person["eye_color"].strip,
+    birth_year: person["birth_year"].strip,
+    gender: person["gender"].strip,
+    homeworld: new_homeworld.strip,
     photo_url: photo_url
   )
   new_person.species =  Species.find_by(name: new_species)

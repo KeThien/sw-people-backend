@@ -25,7 +25,7 @@ module Api
       private
 
       def person_params
-        params.require(:person).permit(:name, :height, :mass, :hair_color, :skin_color, :eye_color, :birth_year, :gender, :species, :homeworld)
+        params.require(:person).permit(:name, :height, :mass, :hair_color, :skin_color, :eye_color, :birth_year, :gender, :species_id, :homeworld)
       end
     end
   end

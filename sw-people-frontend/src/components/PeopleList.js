@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './People.css'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
@@ -67,9 +66,9 @@ export class PeopleList extends Component {
   render() {
     return (
       <Container>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} wrap="wrap-reverse">
           <Grid item xs={12} sm={5}>
-            <Paper>
+            <Paper style={listPaperStyle}>
               {this.state.people.map(person => {
                 return (
                   <div key={person.id}>
@@ -106,5 +105,9 @@ const paperStyle = {
   maxHeight: '100vh',
   padding: '32px 0'
 }
-
+const listPaperStyle = {
+  maxHeight: '185px',
+  overflowY: 'scroll',
+  boxSizing: 'border-box'
+}
 export default PeopleList
