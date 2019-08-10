@@ -47,6 +47,7 @@ export class PeopleList extends Component {
             return { id: species.id, value: species.name }
           })
         })
+        this.setState({ filterSpeciesList: this.state.people })
       })
       .catch(error => console.log(error))
   }
@@ -92,8 +93,13 @@ export class PeopleList extends Component {
   handleSelect = e => {
     e.preventDefault()
     const { value } = e.target
+    const filterSpeciesList =
+      value === 0
+        ? this.state.people
+        : this.state.people.filter(p => p.species_id === value)
     this.setState({
-      selectSpecies_id: value
+      selectSpecies_id: value,
+      filterSpeciesList
     })
   }
   render() {
@@ -105,7 +111,7 @@ export class PeopleList extends Component {
               <Grid item xs={12}>
                 <FormControl fullWidth style={filterStyle}>
                   <InputLabel style={{ textAlign: 'center' }}>
-                    species
+                    by species
                   </InputLabel>
                   <Select
                     name="species_id"
@@ -113,7 +119,9 @@ export class PeopleList extends Component {
                     required={true}
                     onChange={e => this.handleSelect(e)}
                   >
-                    <MenuItem value={0}>All</MenuItem>
+                    <MenuItem value={0}>
+                      <em>All species</em>
+                    </MenuItem>
                     {this.state.speciesList.map((option, i) => {
                       return (
                         <MenuItem key={i} value={option.id}>
