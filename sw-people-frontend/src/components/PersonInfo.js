@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './People.css'
+// import './People.css'
 
 import axios from 'axios'
 
@@ -12,6 +12,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
+import { textAlign } from '@material-ui/system'
 
 export class PersonInfo extends Component {
   state = {
@@ -67,10 +68,10 @@ export class PersonInfo extends Component {
         errors.homeworld = value.length < 4 ? 'Must be 4 characters long!' : ''
         break
       case 'height':
-        errors.height = /^\d+$/.test(value) ? '' : 'Must be a number!'
+        errors.height = value.length <= 0 ? 'is required!' : ''
         break
       case 'mass':
-        errors.mass = /^\d+$/.test(value) ? '' : 'Must be a number!'
+        errors.mass = value.length <= 0 ? 'is required!' : ''
         break
       case 'birth_year':
         errors.birth_year = value.length < 4 ? 'Must be 4 characters long!' : ''
@@ -191,14 +192,10 @@ export class PersonInfo extends Component {
       return (
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={7} className="text-align-left">
+            <Grid item xs={7}>
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <div>
-                <form
-                  onSubmit={this.handleSubmit}
-                  autoComplete="off"
-                  style={formStyle}
-                >
+                <form onSubmit={this.handleSubmit} autoComplete="off">
                   <FormControl fullWidth margin="dense">
                     <InputLabel>species</InputLabel>
                     <Select
@@ -377,8 +374,8 @@ export class PersonInfo extends Component {
       return (
         <Container>
           <Grid container>
-            <Grid item>
-              <h2 style={nameStyle}>Select a character</h2>
+            <Grid item xs={12}>
+              <h2 style={{ textAlign: 'center' }}>Select a character</h2>
             </Grid>
           </Grid>
         </Container>
@@ -395,20 +392,15 @@ const nameStyle = {
   margin: '10px 0px'
 }
 const avatarStyle = {
-  width: '100%',
-  borderRadius: '20px'
-}
-
-const formStyle = {
-  // display: 'flex',
-  // flexDirection: 'column',
-  // justifyContent: 'space-between',
-  // alignItems: 'flex-start'
-  // // paddingRight: '32px',
-  // // margin: '10px 0'
+  maxWidth: '100%',
+  borderRadius: '5px',
+  maxHeight: '300px'
 }
 const buttonStyle = {
   marginRight: '10px'
+}
+const textAlignCenter = {
+  textAlign: 'center'
 }
 
 export default PersonInfo
