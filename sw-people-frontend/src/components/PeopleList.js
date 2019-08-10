@@ -3,8 +3,11 @@ import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
-import Hidden from '@material-ui/core/Hidden'
 import Divider from '@material-ui/core/Divider'
+import SnackBar from '@material-ui/core/Snackbar'
+import SnackbarContent from '@material-ui/core/SnackbarContent'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 import axios from 'axios'
 
 import PersonInfo from './PersonInfo'
@@ -14,7 +17,10 @@ export class PeopleList extends Component {
     people: [],
     speciesList: [],
     person: {},
-    mode: ''
+    mode: '',
+    snackOpen: false,
+    snackMessage: '',
+    snackColor: ''
   }
   getPeople() {
     axios
@@ -48,20 +54,33 @@ export class PeopleList extends Component {
     // console.log(e, 'mode')
     this.setState({ mode: e })
   }
-  handleSubmit = person => {
+  handleSubmit = personAndFlag => {
     this.setState({ mode: 'view' })
-    // console.log('submit', this.state.person.id)
-    this.setState({ person: { ...person } })
+    console.log('submit', this.state.person.id)
+    this.setState({ person: { ...personAndFlag[0] } })
     console.log(this.state.person)
     this.setState(prevState => ({
       people: prevState.people.map(prevPerson => {
         if (prevPerson.id === this.state.person.id) {
-          return person
+          return personAndFlag[0]
         } else {
           return prevPerson
         }
       })
     }))
+    const isSuccess = personAndFlag[1] ? true : false
+    // this.setState({ snackOpen: true })
+    this.callSnackBar(true, isSuccess)
+  }
+  callSnackBar(isOpen, isSuccess) {
+    this.setState({ snackOpen: isOpen ? true : false })
+    this.setState({ snackColor: isSuccess ? '#4BB543' : '#A52100' })
+    this.setState({
+      snackMessage: isSuccess ? 'Update successful!' : 'Error: Try again'
+    })
+  }
+  handleClose = e => {
+    this.setState({ snackOpen: false })
   }
   render() {
     return (
@@ -96,6 +115,30 @@ export class PeopleList extends Component {
             </Paper>
           </Grid>
         </Grid>
+        <SnackBar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          open={this.state.snackOpen}
+          autoHideDuration={2500}
+          onClose={this.handleClose}
+        >
+          <SnackbarContent
+            style={{ backgroundColor: this.state.snackColor }}
+            message={this.state.snackMessage}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="close"
+                color="inherit"
+                onClick={this.handleClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            ]}
+          />
+        </SnackBar>
       </Container>
     )
   }

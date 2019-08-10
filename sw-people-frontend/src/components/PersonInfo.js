@@ -45,7 +45,8 @@ export class PersonInfo extends Component {
       hair_color: '',
       eye_color: ''
     },
-    isFormValid: ''
+    isFormValid: '',
+    flagApiSuccess: false
   }
   componentDidMount() {
     this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
@@ -98,6 +99,7 @@ export class PersonInfo extends Component {
   handleClickMode = e => {
     if (e === 'edit') {
       this.props.handleMode('edit')
+      this.setState({ flagApiSuccess: false })
       this.setState({
         person: {
           name: this.props.person.name,
@@ -121,13 +123,20 @@ export class PersonInfo extends Component {
     e.preventDefault()
     const id = this.props.person.id
     this.setState({ mode: 'view' })
+    // loading logic for button
     axios
       .patch(`/api/v1/people/${id}`, this.state.person)
       .then(response => {
         console.log(response)
+        this.setState({ flagApiSuccess: true })
+        this.props.handleSubmit([
+          { ...this.props.person, ...this.state.person },
+          this.state.flagApiSuccess
+        ])
       })
-      .catch(error => console.log(error))
-    this.props.handleSubmit({ ...this.props.person, ...this.state.person })
+      .catch(error => {
+        console.log(error)
+      })
   }
   render() {
     if (this.props.person.name && this.props.mode === 'view') {
