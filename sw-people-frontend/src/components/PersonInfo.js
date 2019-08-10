@@ -398,8 +398,5 @@ const avatarStyle = {
 const buttonStyle = {
   marginRight: '10px'
 }
-const textAlignCenter = {
-  textAlign: 'center'
-}
 
 export default PersonInfo
