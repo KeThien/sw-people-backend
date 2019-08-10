@@ -12,6 +12,8 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
+import Fade from '@material-ui/core/Fade'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import axios from 'axios'
 
@@ -27,13 +29,16 @@ export class PeopleList extends Component {
     snackOpen: false,
     snackMessage: '',
     snackColor: '',
-    selectSpecies_id: 0
+    selectSpecies_id: 0,
+    isLoading: false
   }
   getPeople() {
+    this.setState({ isLoading: true })
     axios
       .get('/api/v1/people')
       .then(res => {
         this.setState({ people: res.data })
+        this.setState({ filterPeopleList: this.state.people })
       })
       .catch(error => console.log(error))
   }
@@ -45,9 +50,9 @@ export class PeopleList extends Component {
         this.setState({
           speciesList: res.data.map(species => {
             return { id: species.id, value: species.name }
-          })
+          }),
+          isLoading: false
         })
-        this.setState({ filterPeopleList: this.state.people })
       })
       .catch(error => console.log(error))
   }
@@ -133,21 +138,28 @@ export class PeopleList extends Component {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <Paper style={listPaperStyle}>
-                  {this.state.people.map(person => {
-                    return (
-                      <div key={person.id}>
-                        <Button
-                          color="primary"
-                          onClick={() => this.handleClick(person.id)}
-                        >
-                          {person.name}
-                        </Button>
-                        <Divider />
-                      </div>
-                    )
-                  })}
-                </Paper>
+                <Fade in={this.state.isLoading} unmountOnExit>
+                  <div style={loadingStyle}>
+                    <CircularProgress size={50} color="primary" disableShrink />
+                  </div>
+                </Fade>
+                <Fade in={!this.state.isLoading} timeout={1000}>
+                  <Paper style={listPaperStyle}>
+                    {this.state.filterPeopleList.map(person => {
+                      return (
+                        <div key={person.id}>
+                          <Button
+                            color="primary"
+                            onClick={() => this.handleClick(person.id)}
+                          >
+                            {person.name}
+                          </Button>
+                          <Divider />
+                        </div>
+                      )
+                    })}
+                  </Paper>
+                </Fade>
               </Grid>
             </Grid>
           </Grid>
@@ -206,5 +218,11 @@ const filterStyle = {
   textAlign: 'center',
   padding: '0px',
   boxSizing: 'border-box'
+}
+const loadingStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  height: '185px',
+  alignItems: 'center'
 }
 export default PeopleList
