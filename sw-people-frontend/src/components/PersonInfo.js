@@ -13,7 +13,7 @@ import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 import Fade from '@material-ui/core/Fade'
-import { CircularProgress } from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 export class PersonInfo extends Component {
   state = {
