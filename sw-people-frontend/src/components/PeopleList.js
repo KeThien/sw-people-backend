@@ -205,11 +205,11 @@ export class PeopleList extends Component {
 }
 
 const paperStyle = {
-  maxHeight: '100vh',
+  minHeight: '325px',
   padding: '32px 0'
 }
 const listPaperStyle = {
-  maxHeight: '185px',
+  maxHeight: '333px',
   overflowY: 'scroll',
   boxSizing: 'border-box',
   textAlign: 'center'
