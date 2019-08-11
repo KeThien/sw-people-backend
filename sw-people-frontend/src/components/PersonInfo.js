@@ -101,6 +101,20 @@ export class PersonInfo extends Component {
     return Object.values(obj).every(x => x === null || x === '')
   }
   handleClickMode = e => {
+    //  Reset errors states on clickMode like Cancel or click on character
+    this.setState({
+      errors: {
+        species: '',
+        gender: '',
+        homeworld: '',
+        height: '',
+        mass: '',
+        birth_year: '',
+        skin_color: '',
+        hair_color: '',
+        eye_color: ''
+      }
+    })
     if (e === 'edit') {
       this.props.handleMode('edit')
       this.setState({ flagApiSuccess: false })
