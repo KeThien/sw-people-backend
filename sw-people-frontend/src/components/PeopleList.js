@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
 import Fade from '@material-ui/core/Fade'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import StarIcon from '@material-ui/icons/Star'
 
 import axios from 'axios'
 
@@ -30,7 +31,9 @@ export class PeopleList extends Component {
     snackMessage: '',
     snackColor: '',
     selectSpecies_id: 0,
-    isLoading: false
+    isLoading: false,
+    localFavorite: [],
+    isFavorite: false
   }
   getPeople() {
     this.setState({ isLoading: true })
@@ -41,6 +44,8 @@ export class PeopleList extends Component {
         this.setState({ filterPeopleList: this.state.people })
       })
       .catch(error => console.log(error))
+    const parseFav = JSON.parse(localStorage.getItem('localFavorite'))
+    this.setState({ localFavorite: parseFav })
   }
   componentDidMount() {
     this.getPeople()
@@ -60,18 +65,21 @@ export class PeopleList extends Component {
     const person = this.state.people.filter(person => {
       return person.id === id
     })[0]
-    this.setState({ person: { ...person } })
-    this.setState({ mode: 'view' })
+    this.setState({
+      person: { ...person },
+      mode: 'view',
+      isFavorite:
+        this.state.localFavorite && this.state.localFavorite.length
+          ? this.state.localFavorite.includes(id)
+          : false
+    })
   }
   handleMode = e => {
     // console.log(e, 'mode')
     this.setState({ mode: e })
   }
   handleSubmit = personAndFlag => {
-    this.setState({ mode: 'view' })
-    console.log('submit', this.state.person.id)
-    this.setState({ person: { ...personAndFlag[0] } })
-    console.log(this.state.person)
+    this.setState({ mode: 'view', person: { ...personAndFlag[0] } })
     this.setState(prevState => ({
       people: prevState.people.map(prevPerson => {
         if (prevPerson.id === this.state.person.id) {
@@ -85,10 +93,31 @@ export class PeopleList extends Component {
     // this.setState({ snackOpen: true })
     this.callSnackBar(true, isSuccess)
   }
+  handleFavorite = (e, personId) => {
+    const localFavorite = this.state.localFavorite
+
+    this.setState(
+      {
+        isFavorite: e === 'favorite',
+        localFavorite:
+          e === 'favorite'
+            ? [...localFavorite, personId]
+            : localFavorite.filter(id => id !== personId)
+      },
+      () => {
+        localStorage.setItem(
+          'localFavorite',
+          JSON.stringify(this.state.localFavorite)
+        )
+        console.log(JSON.stringify(this.state.localFavorite))
+      }
+    )
+  }
+
   callSnackBar(isOpen, isSuccess) {
-    this.setState({ snackOpen: isOpen ? true : false })
-    this.setState({ snackColor: isSuccess ? '#4BB543' : '#A52100' })
     this.setState({
+      snackOpen: isOpen ? true : false,
+      snackColor: isSuccess ? '#4BB543' : '#A52100',
       snackMessage: isSuccess ? 'Update successful!' : 'Error: Try again'
     })
   }
@@ -125,7 +154,8 @@ export class PeopleList extends Component {
                     onChange={e => this.handleSelect(e)}
                   >
                     <MenuItem value={-1}>
-                      <em>Favorites</em>
+                      <StarIcon style={{ color: 'gold', fontSize: '18px' }} />
+                      <em> Favorites</em>
                     </MenuItem>
                     <MenuItem value={0}>
                       <em>All species</em>
@@ -174,7 +204,8 @@ export class PeopleList extends Component {
                 mode={this.state.mode}
                 handleSubmit={this.handleSubmit}
                 speciesList={this.state.speciesList}
-                favorite={true}
+                isFavorite={this.state.isFavorite}
+                handleFavorite={this.handleFavorite}
               />
             </Paper>
           </Grid>

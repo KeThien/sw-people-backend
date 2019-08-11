@@ -50,8 +50,7 @@ export class PersonInfo extends Component {
     },
     isFormValid: '',
     flagApiSuccess: false,
-    isLoading: false,
-    isFavorite: true
+    isLoading: false
   }
   componentDidMount() {
     this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
@@ -121,6 +120,8 @@ export class PersonInfo extends Component {
       })
     } else if (e === 'view') {
       this.props.handleMode('view')
+    } else if (e === 'favorite' || e === 'unfavorite') {
+      this.props.handleFavorite(e, this.props.person.id)
     }
   }
 
@@ -187,9 +188,22 @@ export class PersonInfo extends Component {
                 size="small"
                 variant="outlined"
                 color="secondary"
+                style={buttonStyle}
                 onClick={() => this.handleClickMode('edit')}
               >
                 Edit
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                color={this.props.isFavorite ? null : 'primary'}
+                onClick={() =>
+                  this.handleClickMode(
+                    this.props.isFavorite ? 'unfavorite' : 'favorite'
+                  )
+                }
+              >
+                {this.props.isFavorite ? 'Unfave' : 'Fave'}
               </Button>
             </Grid>
             <Grid item xs={5}>
@@ -199,7 +213,7 @@ export class PersonInfo extends Component {
                 style={avatarStyle}
               />
             </Grid>
-            {this.props.favorite ? <StarIcon style={favoriteStyle} /> : null}
+            {this.props.isFavorite ? <StarIcon style={favoriteStyle} /> : null}
           </Grid>
         </Container>
       )
