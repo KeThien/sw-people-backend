@@ -127,10 +127,14 @@ export class PeopleList extends Component {
   handleSelect = e => {
     e.preventDefault()
     const { value } = e.target
-    const filterPeopleList =
-      value === 0
-        ? this.state.people
-        : this.state.people.filter(p => p.species_id === value)
+    let filterPeopleList = []
+    if (value === -1) {
+      filterPeopleList = this.state.people.filter(p => this.checkFav(p.id))
+    } else if (value === 0) {
+      filterPeopleList = this.state.people
+    } else {
+      filterPeopleList = this.state.people.filter(p => p.species_id === value)
+    }
     this.setState({
       selectSpecies_id: value,
       filterPeopleList
@@ -154,11 +158,11 @@ export class PeopleList extends Component {
                     onChange={e => this.handleSelect(e)}
                   >
                     <MenuItem value={-1}>
+                      <em>Your favorites</em>
                       <StarIcon style={{ color: 'gold', fontSize: '18px' }} />
-                      <em> Favorites</em>
                     </MenuItem>
                     <MenuItem value={0}>
-                      <em>All species</em>
+                      <em>All</em>
                     </MenuItem>
                     {this.state.speciesList.map((option, i) => {
                       return (
