@@ -2,7 +2,7 @@ module Api
   module V1
     class PeopleController < ApplicationController
       def index
-        @people = Person.order("id ASC")
+        @people = Person.order("name ASC")
         render json: @people
       end
       def show
