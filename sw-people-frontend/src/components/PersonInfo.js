@@ -151,7 +151,7 @@ export class PersonInfo extends Component {
         species => species.id === this.props.person.species_id
       )[0].value
       return (
-        <Container style={parentFavoriteStyle}>
+        <Container>
           <Grid container spacing={3}>
             <Grid item xs={7}>
               <h2 style={nameStyle}>{this.props.person.name}</h2>
@@ -206,14 +206,16 @@ export class PersonInfo extends Component {
                 {this.props.isFavorite ? 'Unfave' : 'Fave'}
               </Button>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={5} style={parentFavoriteStyle}>
               <img
                 src={this.props.person.photo_url}
                 alt="avatar"
                 style={avatarStyle}
               />
+              {this.props.isFavorite ? (
+                <StarIcon style={favoriteStyle} />
+              ) : null}
             </Grid>
-            {this.props.isFavorite ? <StarIcon style={favoriteStyle} /> : null}
           </Grid>
         </Container>
       )
@@ -439,10 +441,10 @@ const buttonGroupStyle = {
 }
 const favoriteStyle = {
   position: 'absolute',
-  top: '-40px',
-  right: '-20px',
+  top: '15px',
+  right: '15px',
   cursor: 'pointer',
-  fontSize: '40px',
+  fontSize: '25px',
   color: 'gold'
 }
 const parentFavoriteStyle = {

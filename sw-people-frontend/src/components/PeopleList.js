@@ -87,8 +87,15 @@ export class PeopleList extends Component {
       })
     }))
     const isSuccess = personAndFlag[1] ? true : false
-    // this.setState({ snackOpen: true })
-    this.callSnackBar(true, isSuccess)
+    let message = {
+      success: 'Update successful!',
+      error: 'Error: Try again'
+    }
+    if (isSuccess) {
+      this.callSnackBar(true, message.success, '#4BB543')
+    } else {
+      this.callSnackBar(true, message.error, '#A52100')
+    }
   }
   handleFavorite = (e, personId) => {
     const localFavorite = this.state.localFavorite
@@ -114,11 +121,11 @@ export class PeopleList extends Component {
       ? this.state.localFavorite.includes(id)
       : false
   }
-  callSnackBar(isOpen, isSuccess) {
+  callSnackBar(isOpen, message, color) {
     this.setState({
       snackOpen: isOpen ? true : false,
-      snackColor: isSuccess ? '#4BB543' : '#A52100',
-      snackMessage: isSuccess ? 'Update successful!' : 'Error: Try again'
+      snackColor: color,
+      snackMessage: message
     })
   }
   handleClose = e => {
