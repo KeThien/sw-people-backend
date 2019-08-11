@@ -68,10 +68,7 @@ export class PeopleList extends Component {
     this.setState({
       person: { ...person },
       mode: 'view',
-      isFavorite:
-        this.state.localFavorite && this.state.localFavorite.length
-          ? this.state.localFavorite.includes(id)
-          : false
+      isFavorite: this.checkFav(id)
     })
   }
   handleMode = e => {
@@ -109,11 +106,14 @@ export class PeopleList extends Component {
           'localFavorite',
           JSON.stringify(this.state.localFavorite)
         )
-        console.log(JSON.stringify(this.state.localFavorite))
       }
     )
   }
-
+  checkFav(id) {
+    return this.state.localFavorite && this.state.localFavorite.length
+      ? this.state.localFavorite.includes(id)
+      : false
+  }
   callSnackBar(isOpen, isSuccess) {
     this.setState({
       snackOpen: isOpen ? true : false,
@@ -180,13 +180,32 @@ export class PeopleList extends Component {
                   <Paper style={listPaperStyle}>
                     {this.state.filterPeopleList.map(person => {
                       return (
-                        <div key={person.id}>
+                        <div
+                          key={person.id}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}
+                        >
                           <Button
                             color="primary"
                             onClick={() => this.handleClick(person.id)}
                           >
                             {person.name}
                           </Button>
+                          {this.checkFav(person.id) ? (
+                            <StarIcon
+                              style={{
+                                color: 'gold',
+                                fontSize: '18px',
+                                marginBottom: '3px'
+                              }}
+                            />
+                          ) : (
+                            ''
+                          )}
+
                           <Divider />
                         </div>
                       )
