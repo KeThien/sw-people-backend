@@ -56,7 +56,13 @@ people.each do |person|
   
   new_homeworld = person["homeworld"].nil? ? "" : JSON.parse(RestClient.get(person["homeworld"]))["name"]
   
+  # Exception for Ackbar because the first Ackbar was Ackbar Slash spaceship
+  if person["name"] == 'Ackbar'
+    person["name"] = 'Ackbar Gial'
+  end
+
   puts person["name"]
+  
   personName = person["name"].split
   if personName.length >= 3
     personName = personName.values_at(0, -1)
