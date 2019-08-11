@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
 import Fade from '@material-ui/core/Fade'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import StarIcon from '@material-ui/icons/Star'
 
 import axios from 'axios'
 
@@ -30,7 +31,9 @@ export class PeopleList extends Component {
     snackMessage: '',
     snackColor: '',
     selectSpecies_id: 0,
-    isLoading: false
+    isLoading: false,
+    localFavorite: [],
+    isFavorite: false
   }
   getPeople() {
     this.setState({ isLoading: true })
@@ -41,6 +44,8 @@ export class PeopleList extends Component {
         this.setState({ filterPeopleList: this.state.people })
       })
       .catch(error => console.log(error))
+    const parseFav = JSON.parse(localStorage.getItem('localFavorite'))
+    this.setState({ localFavorite: parseFav })
   }
   componentDidMount() {
     this.getPeople()
@@ -60,18 +65,18 @@ export class PeopleList extends Component {
     const person = this.state.people.filter(person => {
       return person.id === id
     })[0]
-    this.setState({ person: { ...person } })
-    this.setState({ mode: 'view' })
+    this.setState({
+      person: { ...person },
+      mode: 'view',
+      isFavorite: this.checkFav(id)
+    })
   }
   handleMode = e => {
     // console.log(e, 'mode')
     this.setState({ mode: e })
   }
   handleSubmit = personAndFlag => {
-    this.setState({ mode: 'view' })
-    console.log('submit', this.state.person.id)
-    this.setState({ person: { ...personAndFlag[0] } })
-    console.log(this.state.person)
+    this.setState({ mode: 'view', person: { ...personAndFlag[0] } })
     this.setState(prevState => ({
       people: prevState.people.map(prevPerson => {
         if (prevPerson.id === this.state.person.id) {
@@ -82,14 +87,45 @@ export class PeopleList extends Component {
       })
     }))
     const isSuccess = personAndFlag[1] ? true : false
-    // this.setState({ snackOpen: true })
-    this.callSnackBar(true, isSuccess)
+    let message = {
+      success: 'Update successful!',
+      error: 'Error: Try again'
+    }
+    if (isSuccess) {
+      this.callSnackBar(true, message.success, '#4BB543')
+    } else {
+      this.callSnackBar(true, message.error, '#A52100')
+    }
   }
-  callSnackBar(isOpen, isSuccess) {
-    this.setState({ snackOpen: isOpen ? true : false })
-    this.setState({ snackColor: isSuccess ? '#4BB543' : '#A52100' })
+  handleFavorite = (e, personId) => {
+    const localFavorite = this.state.localFavorite
+
+    this.setState(
+      {
+        isFavorite: e === 'favorite',
+        localFavorite:
+          e === 'favorite'
+            ? [...localFavorite, personId]
+            : localFavorite.filter(id => id !== personId)
+      },
+      () => {
+        localStorage.setItem(
+          'localFavorite',
+          JSON.stringify(this.state.localFavorite)
+        )
+      }
+    )
+  }
+  checkFav(id) {
+    return this.state.localFavorite && this.state.localFavorite.length
+      ? this.state.localFavorite.includes(id)
+      : false
+  }
+  callSnackBar(isOpen, message, color) {
     this.setState({
-      snackMessage: isSuccess ? 'Update successful!' : 'Error: Try again'
+      snackOpen: isOpen ? true : false,
+      snackColor: color,
+      snackMessage: message
     })
   }
   handleClose = e => {
@@ -98,10 +134,14 @@ export class PeopleList extends Component {
   handleSelect = e => {
     e.preventDefault()
     const { value } = e.target
-    const filterPeopleList =
-      value === 0
-        ? this.state.people
-        : this.state.people.filter(p => p.species_id === value)
+    let filterPeopleList = []
+    if (value === -1) {
+      filterPeopleList = this.state.people.filter(p => this.checkFav(p.id))
+    } else if (value === 0) {
+      filterPeopleList = this.state.people
+    } else {
+      filterPeopleList = this.state.people.filter(p => p.species_id === value)
+    }
     this.setState({
       selectSpecies_id: value,
       filterPeopleList
@@ -116,7 +156,7 @@ export class PeopleList extends Component {
               <Grid item xs={12}>
                 <FormControl fullWidth style={filterStyle}>
                   <InputLabel style={{ textAlign: 'center' }}>
-                    by species
+                    filter by
                   </InputLabel>
                   <Select
                     name="species_id"
@@ -124,8 +164,12 @@ export class PeopleList extends Component {
                     required={true}
                     onChange={e => this.handleSelect(e)}
                   >
+                    <MenuItem value={-1}>
+                      <em>Your favorites</em>
+                      <StarIcon style={{ color: 'gold', fontSize: '18px' }} />
+                    </MenuItem>
                     <MenuItem value={0}>
-                      <em>All species</em>
+                      <em>All</em>
                     </MenuItem>
                     {this.state.speciesList.map((option, i) => {
                       return (
@@ -147,13 +191,32 @@ export class PeopleList extends Component {
                   <Paper style={listPaperStyle}>
                     {this.state.filterPeopleList.map(person => {
                       return (
-                        <div key={person.id}>
+                        <div
+                          key={person.id}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}
+                        >
                           <Button
                             color="primary"
                             onClick={() => this.handleClick(person.id)}
                           >
                             {person.name}
                           </Button>
+                          {this.checkFav(person.id) ? (
+                            <StarIcon
+                              style={{
+                                color: 'gold',
+                                fontSize: '18px',
+                                marginBottom: '3px'
+                              }}
+                            />
+                          ) : (
+                            ''
+                          )}
+
                           <Divider />
                         </div>
                       )
@@ -171,6 +234,8 @@ export class PeopleList extends Component {
                 mode={this.state.mode}
                 handleSubmit={this.handleSubmit}
                 speciesList={this.state.speciesList}
+                isFavorite={this.state.isFavorite}
+                handleFavorite={this.handleFavorite}
               />
             </Paper>
           </Grid>

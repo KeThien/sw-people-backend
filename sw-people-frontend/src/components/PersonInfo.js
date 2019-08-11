@@ -14,6 +14,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 import Fade from '@material-ui/core/Fade'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import StarIcon from '@material-ui/icons/Star'
 
 export class PersonInfo extends Component {
   state = {
@@ -119,6 +120,8 @@ export class PersonInfo extends Component {
       })
     } else if (e === 'view') {
       this.props.handleMode('view')
+    } else if (e === 'favorite' || e === 'unfavorite') {
+      this.props.handleFavorite(e, this.props.person.id)
     }
   }
 
@@ -150,7 +153,7 @@ export class PersonInfo extends Component {
       return (
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={7} className="text-align-left">
+            <Grid item xs={7}>
               <h2 style={nameStyle}>{this.props.person.name}</h2>
               <ul style={styleList}>
                 <li>
@@ -185,17 +188,33 @@ export class PersonInfo extends Component {
                 size="small"
                 variant="outlined"
                 color="secondary"
+                style={buttonStyle}
                 onClick={() => this.handleClickMode('edit')}
               >
                 Edit
               </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                color={this.props.isFavorite ? null : 'primary'}
+                onClick={() =>
+                  this.handleClickMode(
+                    this.props.isFavorite ? 'unfavorite' : 'favorite'
+                  )
+                }
+              >
+                {this.props.isFavorite ? 'Unfave' : 'Fave'}
+              </Button>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={5} style={parentFavoriteStyle}>
               <img
                 src={this.props.person.photo_url}
                 alt="avatar"
                 style={avatarStyle}
               />
+              {this.props.isFavorite ? (
+                <StarIcon style={favoriteStyle} />
+              ) : null}
             </Grid>
           </Grid>
         </Container>
@@ -390,13 +409,12 @@ export class PersonInfo extends Component {
       )
     } else {
       return (
-        <Container>
-          <Grid container>
-            <Grid item xs={12}>
-              <h2 style={{ textAlign: 'center' }}>Select a character</h2>
-            </Grid>
+        <Grid container>
+          <Grid item xs={12}>
+            <h2 style={{ textAlign: 'center' }}>Welcome to my test project</h2>
+            <p style={{ textAlign: 'center' }}>Please select a character</p>
           </Grid>
-        </Container>
+        </Grid>
       )
     }
   }
@@ -420,6 +438,17 @@ const buttonStyle = {
 const buttonGroupStyle = {
   display: 'flex',
   alignItems: 'center'
+}
+const favoriteStyle = {
+  position: 'absolute',
+  top: '15px',
+  right: '15px',
+  cursor: 'pointer',
+  fontSize: '25px',
+  color: 'gold'
+}
+const parentFavoriteStyle = {
+  position: 'relative'
 }
 
 export default PersonInfo
