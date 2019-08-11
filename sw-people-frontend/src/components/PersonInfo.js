@@ -206,15 +206,19 @@ export class PersonInfo extends Component {
                 {this.props.isFavorite ? 'Unfave' : 'Fave'}
               </Button>
             </Grid>
-            <Grid item xs={5} style={parentFavoriteStyle}>
-              <img
-                src={this.props.person.photo_url}
-                alt="avatar"
-                style={avatarStyle}
-              />
-              {this.props.isFavorite ? (
-                <StarIcon style={favoriteStyle} />
-              ) : null}
+            <Grid item xs={5}>
+              <Grid container justify="flex-end" style={parentFavoriteStyle}>
+                <Grid item>
+                  <img
+                    src={this.props.person.photo_url}
+                    alt="avatar"
+                    style={avatarStyle}
+                  />
+                  {this.props.isFavorite ? (
+                    <StarIcon style={favoriteStyle} />
+                  ) : null}
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Container>
@@ -441,8 +445,8 @@ const buttonGroupStyle = {
 }
 const favoriteStyle = {
   position: 'absolute',
-  top: '15px',
-  right: '15px',
+  top: '5px',
+  right: '5px',
   cursor: 'pointer',
   fontSize: '25px',
   color: 'gold'
