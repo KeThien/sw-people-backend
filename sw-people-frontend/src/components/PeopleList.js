@@ -98,8 +98,7 @@ export class PeopleList extends Component {
     }
   }
   handleFavorite = (e, personId) => {
-    const localFavorite = this.state.localFavorite
-
+    const localFavorite = this.state.localFavorite || []
     this.setState(
       {
         isFavorite: e === 'favorite',
