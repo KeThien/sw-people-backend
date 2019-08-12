@@ -1,11 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
-
 require 'json'
 require 'rest-client'
 require 'open-uri'
@@ -46,6 +38,7 @@ puts "-----------------"
 puts " Begin seeding..."
 puts "-----------------"
 
+#  Use wikia wookieepedia API to fin the page of the character and scrap the image avatar
 def search_wikia(name)
   return JSON.parse(RestClient.get("https://starwars.fandom.com/api/v1/Search/List?query=#{URI.encode(name)}&limit=1&minArticleQuality=1&batch=1&namespaces=0%2C14"))["items"].first["url"]
 end
@@ -62,21 +55,24 @@ people.each do |person|
   end
 
   puts person["name"]
-  
+
+  #  Block: where the search wikia need to have 2 search words because didn't find it properly with 3 words
   personName = person["name"].split
   if personName.length >= 3
     personName = personName.values_at(0, -1)
   end
   personName = personName.join("+")
   character_page_url = search_wikia(personName)
-  
+  # ------------------------------------------------------
+
+  # fetch the photo of the wikia page
   if character_page_url != nil
     html_doc = Nokogiri::HTML(open(character_page_url))
     photo_url = html_doc.search('.pi-image-thumbnail').first.attribute('src').value
   else
     photo_url = ""
   end
-
+# Create new Person in table People
   new_person = Person.new(
     name: person["name"].strip,
     height: person["height"].strip,
