@@ -1,24 +1,23 @@
 import React, { Component } from 'react'
-import Container from '@material-ui/core/Container'
+import axios from 'axios'
+import PersonInfo from './PersonInfo'
+
 import Grid from '@material-ui/core/Grid'
+import Fade from '@material-ui/core/Fade'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
+import Select from '@material-ui/core/Select'
 import Divider from '@material-ui/core/Divider'
 import SnackBar from '@material-ui/core/Snackbar'
-import SnackbarContent from '@material-ui/core/SnackbarContent'
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import InputLabel from '@material-ui/core/InputLabel'
-import Fade from '@material-ui/core/Fade'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import StarIcon from '@material-ui/icons/Star'
-
-import axios from 'axios'
-
-import PersonInfo from './PersonInfo'
+import MenuItem from '@material-ui/core/MenuItem'
+import Container from '@material-ui/core/Container'
+import CloseIcon from '@material-ui/icons/Close'
+import IconButton from '@material-ui/core/IconButton'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import SnackbarContent from '@material-ui/core/SnackbarContent'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 export class PeopleList extends Component {
   state = {
@@ -35,6 +34,7 @@ export class PeopleList extends Component {
     localFavorite: [],
     isFavorite: false
   }
+  // Function to get all people in list
   getPeople() {
     this.setState({ isLoading: true })
     axios
@@ -60,6 +60,26 @@ export class PeopleList extends Component {
         })
       })
       .catch(error => console.log(error))
+  }
+  // -----------------
+  // Event handlers
+  // -----------------
+
+  handleSelect = e => {
+    e.preventDefault()
+    const { value } = e.target
+    let filterPeopleList = []
+    if (value === -1) {
+      filterPeopleList = this.state.people.filter(p => this.checkFav(p.id))
+    } else if (value === 0) {
+      filterPeopleList = this.state.people
+    } else {
+      filterPeopleList = this.state.people.filter(p => p.species_id === value)
+    }
+    this.setState({
+      selectSpecies_id: value,
+      filterPeopleList
+    })
   }
   handleClick = id => {
     const person = this.state.people.filter(person => {
@@ -97,6 +117,11 @@ export class PeopleList extends Component {
       this.callSnackBar(true, message.error, '#A52100')
     }
   }
+  checkFav(id) {
+    return this.state.localFavorite && this.state.localFavorite.length
+      ? this.state.localFavorite.includes(id)
+      : false
+  }
   handleFavorite = (e, personId) => {
     const localFavorite = this.state.localFavorite || []
     this.setState(
@@ -115,11 +140,7 @@ export class PeopleList extends Component {
       }
     )
   }
-  checkFav(id) {
-    return this.state.localFavorite && this.state.localFavorite.length
-      ? this.state.localFavorite.includes(id)
-      : false
-  }
+
   callSnackBar(isOpen, message, color) {
     this.setState({
       snackOpen: isOpen ? true : false,
@@ -129,22 +150,6 @@ export class PeopleList extends Component {
   }
   handleClose = e => {
     this.setState({ snackOpen: false })
-  }
-  handleSelect = e => {
-    e.preventDefault()
-    const { value } = e.target
-    let filterPeopleList = []
-    if (value === -1) {
-      filterPeopleList = this.state.people.filter(p => this.checkFav(p.id))
-    } else if (value === 0) {
-      filterPeopleList = this.state.people
-    } else {
-      filterPeopleList = this.state.people.filter(p => p.species_id === value)
-    }
-    this.setState({
-      selectSpecies_id: value,
-      filterPeopleList
-    })
   }
   render() {
     return (
@@ -215,7 +220,6 @@ export class PeopleList extends Component {
                           ) : (
                             ''
                           )}
-
                           <Divider />
                         </div>
                       )

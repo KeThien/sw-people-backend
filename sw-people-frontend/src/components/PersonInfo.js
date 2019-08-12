@@ -1,20 +1,19 @@
 import React, { Component } from 'react'
-// import './People.css'
 
 import axios from 'axios'
 
-import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
+import Fade from '@material-ui/core/Fade'
+import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import InputLabel from '@material-ui/core/InputLabel'
-import Input from '@material-ui/core/Input'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
-import Fade from '@material-ui/core/Fade'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import StarIcon from '@material-ui/icons/Star'
+import Container from '@material-ui/core/Container'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 export class PersonInfo extends Component {
   state = {
@@ -55,6 +54,13 @@ export class PersonInfo extends Component {
   componentDidMount() {
     this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
   }
+  checkObjEmpty(obj) {
+    return Object.values(obj).every(x => x === null || x === '')
+  }
+  // -----------------
+  // Event handlers
+  // -----------------
+
   handleChange = e => {
     // console.log(e.target.name, e.target.value)
     e.preventDefault()
@@ -97,9 +103,6 @@ export class PersonInfo extends Component {
     })
     this.setState({ isFormValid: this.checkObjEmpty(this.state.errors) })
   }
-  checkObjEmpty(obj) {
-    return Object.values(obj).every(x => x === null || x === '')
-  }
   handleClickMode = e => {
     //  Reset errors states on clickMode like Cancel or click on character
     this.setState({
@@ -138,7 +141,6 @@ export class PersonInfo extends Component {
       this.props.handleFavorite(e, this.props.person.id)
     }
   }
-
   handleSubmit = e => {
     e.preventDefault()
     const id = this.props.person.id
