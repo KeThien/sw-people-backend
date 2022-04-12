@@ -46,4 +46,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rest-client', '~> 2.0.2'
-gem 'nokogiri', '~> 1.10.3'
+gem 'nokogiri', '~> 1.13.4'
